@@ -11,7 +11,8 @@ To build image in current folder run command
 ```
     docker build -t oleksiichernomaz/php-fpm:5.6 .
 ```
-Build _1.1.1_ includes:
+## Build _1.1.1_ includes: ##
+
 * php-fpm:5.6
 * mysql support
 * pgsql support
