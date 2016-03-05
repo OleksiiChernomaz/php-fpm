@@ -1,9 +1,10 @@
-#docker build -t oleksiichernomaz/php-fpm:5.6 .
-FROM php:5.6-fpm
+#docker build -t oleksiichernomaz/php-fpm:7.0 .
+#docker run -it oleksiichernomaz/php-fpm:7.0 bash
+FROM php:7.0-fpm
 MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
-LABEL version="1.1.1"
+LABEL version="2.1.1"
 
-ENV XDEBUG_VERSION 2.3.3
+ENV XDEBUG_VERSION 2.4.0
 ENV XCACHE_VERSION 3.2.0
 ENV GEOIP_VERSION 1.1.0
 
@@ -41,38 +42,11 @@ RUN cd /usr/src/php/ext \
     && docker-php-ext-install xdebug-$XDEBUG_VERSION \
     && rm -rf xdebug-$XDEBUG_VERSION.tgz
 
-# install x-cache
-RUN cd /usr/src/php/ext \
-    && wget http://xcache.lighttpd.net/pub/Releases/$XCACHE_VERSION/xcache-$XCACHE_VERSION.tar.gz \
-    && tar -xzf xcache-$XCACHE_VERSION.tar.gz \
-    && cd xcache-$XCACHE_VERSION \
-    && phpize \
-    && ./configure --enable-xcache --enable-xcache-coverager\
-    && make && make install \
-    && cd .. \
-    && docker-php-ext-install xcache-$XCACHE_VERSION \
-    && rm -rf xcache-$XCACHE_VERSION.tar.gz \
-    && sed -i 's/zend_extension/extension/g' /usr/local/etc/php/conf.d/docker-php-ext-xcache.ini
-
-# Install geoIp
-RUN apt-get install -y geoip-bin geoip-database libgeoip-dev \
-    && wget https://pecl.php.net/get/geoip-$GEOIP_VERSION.tgz \
-    && tar -xzf geoip-$GEOIP_VERSION.tgz \
-    && cd geoip-$GEOIP_VERSION \
-    && phpize \
-    && ./configure \
-    && make && make install \
-    && cd .. \
-    && rm -rf geoip-$GEOIP_VERSION.tgz \
-    && echo "extension=geoip.so" >> /usr/local/etc/php/conf.d/docker-php-ext-geoip.ini \
-    && wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
-    && gunzip GeoLiteCity.dat.gz \
-    && mv -v GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat
-
 # install redis
 RUN cd /usr/src/php/ext \
     && git clone https://github.com/phpredis/phpredis.git redis \
     && cd redis \
+    && git checkout php7 \
     && phpize \
     && ./configure --enable-redis \
     && cd .. \
@@ -91,8 +65,6 @@ RUN npm install -g uglify-js \
 
 # Write configs
 ADD php-fpm/php-fpm.conf /usr/local/etc/php-fpm.conf
-ADD php-fpm/x-cache.conf /usr/local/etc/php/conf.d/docker-php-ext-xcache-$XCACHE_VERSION.ini
-ADD php-fpm/geoip.conf /usr/local/etc/php/conf.d/docker-php-ext-geoip-$GEOIP_VERSION.ini
 ADD php-fpm/php.ini /usr/local/etc/php/conf.d/php.ini
 
 RUN rm -rf /var/www/* \
