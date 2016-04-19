@@ -1,16 +1,14 @@
 #docker build -t oleksiichernomaz/php-fpm:7.0 .
+#sudo docker push oleksiichernomaz/php-fpm:7.0
 #docker run -it oleksiichernomaz/php-fpm:7.0 bash
+
 FROM php:7.0-fpm
 MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
-LABEL version="2.1.1"
-
-ENV XDEBUG_VERSION 2.4.0
-ENV XCACHE_VERSION 3.2.0
-ENV GEOIP_VERSION 1.1.0
+LABEL version="2.1.3"
 
 # Install modules
 RUN apt-get update && apt-get install -y --force-yes \
-        vim wget git npm\
+        wget npm git \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
@@ -21,26 +19,15 @@ RUN apt-get update && apt-get install -y --force-yes \
 # Install additional core extensions
 RUN docker-php-ext-install \
         mbstring \
-        pdo_mysql \
+#        pdo_mysql \
         pdo_pgsql \
-        soap \
+#        soap \
         zip \
         opcache \
         mcrypt
-# Install GD
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install gd
 
-# install x-debug
-RUN cd /usr/src/php/ext \
-    && wget http://xdebug.org/files/xdebug-$XDEBUG_VERSION.tgz \
-    && tar -xzf xdebug-$XDEBUG_VERSION.tgz \
-    && cd xdebug-$XDEBUG_VERSION \
-    && phpize \
-    && ./configure --enable-xdebug\
-    && make && make install \
-    && cd .. \
-    && docker-php-ext-install xdebug-$XDEBUG_VERSION \
-    && rm -rf xdebug-$XDEBUG_VERSION.tgz
+# Install GD
+#RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install gd
 
 # install redis
 RUN cd /usr/src/php/ext \
@@ -74,9 +61,11 @@ VOLUME /var/www/
 WORKDIR /var/www/
 
 #cleaning
-RUN apt-get clean \
-    && apt-get autoclean \
-    && apt-get autoremove
+RUN apt-get --purge -y --force-yes remove wget git
+
+RUN apt-get clean && \
+    apt-get autoclean && \
+    apt-get autoremove -y --force-yes
 
 RUN rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/* \
@@ -85,8 +74,5 @@ RUN rm -rf /var/lib/apt/lists/* \
 
 RUN rm -rf /usr/share/man/* /usr/share/groff/* /usr/share/info/* \
     && rm -rf /usr/share/lintian/* /usr/share/linda/* /var/cache/man/*
-
-#install bower
-RUN npm install -g bower
 
 CMD ["php-fpm"]
