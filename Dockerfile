@@ -30,18 +30,6 @@ RUN docker-php-ext-install \
 # Install GD
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install gd
 
-# install x-debug
-RUN cd /usr/src/php/ext \
-    && wget http://xdebug.org/files/xdebug-$XDEBUG_VERSION.tgz \
-    && tar -xzf xdebug-$XDEBUG_VERSION.tgz \
-    && cd xdebug-$XDEBUG_VERSION \
-    && phpize \
-    && ./configure --enable-xdebug\
-    && make && make install \
-    && cd .. \
-    && docker-php-ext-install xdebug-$XDEBUG_VERSION \
-    && rm -rf xdebug-$XDEBUG_VERSION.tgz
-
 # install redis
 RUN cd /usr/src/php/ext \
     && git clone https://github.com/phpredis/phpredis.git redis \
@@ -88,5 +76,17 @@ RUN rm -rf /usr/share/man/* /usr/share/groff/* /usr/share/info/* \
 
 #install bower
 RUN npm install -g bower
+
+# install x-debug
+RUN cd /usr/src/php/ext \
+    && wget http://xdebug.org/files/xdebug-$XDEBUG_VERSION.tgz \
+    && tar -xzf xdebug-$XDEBUG_VERSION.tgz \
+    && cd xdebug-$XDEBUG_VERSION \
+    && phpize \
+    && ./configure --enable-xdebug\
+    && make && make install \
+    && cd .. \
+    && docker-php-ext-install xdebug-$XDEBUG_VERSION \
+    && rm -rf xdebug-$XDEBUG_VERSION.tgz
 
 CMD ["php-fpm"]
