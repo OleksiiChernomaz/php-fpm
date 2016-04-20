@@ -49,18 +49,6 @@ RUN curl -sS https://getcomposer.org/installer | php \
 RUN npm install -g uglify-js \
     && npm install -g uglifycss
 
-# install x-debug
-RUN cd /usr/src/php/ext \
-    && wget http://xdebug.org/files/xdebug-$XDEBUG_VERSION.tgz \
-    && tar -xzf xdebug-$XDEBUG_VERSION.tgz \
-    && cd xdebug-$XDEBUG_VERSION \
-    && phpize \
-    && ./configure --enable-xdebug\
-    && make && make install \
-    && cd .. \
-    && docker-php-ext-install xdebug-$XDEBUG_VERSION \
-    && rm -rf xdebug-$XDEBUG_VERSION.tgz
-
 # Write configs
 ADD php-fpm/php-fpm.conf /usr/local/etc/php-fpm.conf
 ADD php-fpm/php.ini /usr/local/etc/php/conf.d/php.ini
