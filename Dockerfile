@@ -4,10 +4,11 @@
 FROM php:7.0-fpm
 MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
 
-ENV XDEBUG_VERSION 2.4.0
-
 # Install modules
-RUN apt-get update && apt-get install -y --force-yes \
+RUN export XDEBUG_VERSION=2.4.0 \
+    && export APCU_VERSION=5.1.3 \
+    && export APCU_BC_VERSION=1.0.3 \
+&& apt-get update && apt-get install -y --force-yes \
         vim wget git npm\
         libfreetype6-dev \
         libjpeg62-turbo-dev \
@@ -15,6 +16,7 @@ RUN apt-get update && apt-get install -y --force-yes \
         libpng12-dev \
         libxml2-dev \
         libpq-dev \
+        libgearman-dev \
         libphp-predis \
 # Install additional core extensions
 && docker-php-ext-install \
@@ -55,17 +57,52 @@ RUN apt-get update && apt-get install -y --force-yes \
     && tar -xzf xdebug-$XDEBUG_VERSION.tgz \
     && cd xdebug-$XDEBUG_VERSION \
     && phpize \
-    && ./configure --enable-xdebug\
+    && ./configure --enable-xdebug \
     && make && make install \
     && cd .. \
     && docker-php-ext-install xdebug-$XDEBUG_VERSION \
     && rm -rf xdebug-$XDEBUG_VERSION.tgz \
 
+#install apcu
+&& cd /usr/src/php/ext \
+    && wget https://pecl.php.net/get/apcu-$APCU_VERSION.tgz \
+    && tar -xzf apcu-$APCU_VERSION.tgz  \
+    && cd apcu-$APCU_VERSION \
+    && phpize \
+    && ./configure --enable-apcu-bc\
+    && make && make install \
+    && cd .. \
+    && docker-php-ext-install apcu-$APCU_VERSION \
+    && rm -rf apcu-$APCU_VERSION.tgz \
+
+#install apcu-bc (apc support)
+&& cd /usr/src/php/ext \
+    && wget https://pecl.php.net/get/apcu_bc-$APCU_BC_VERSION.tgz \
+    && tar -xzf apcu_bc-$APCU_BC_VERSION.tgz  \
+    && cd apcu_bc-$APCU_BC_VERSION \
+    && phpize \
+    && ./configure --enable-apcu-bc\
+    && make && make install \
+    && cd .. \
+    && docker-php-ext-install apcu_bc-$APCU_BC_VERSION \
+    && rm -rf apcu_bc-$APCU_BC_VERSION.tgz \
+
 && rm -rf /var/www/* \
     && chown -R www-data:www-data /var/www/ \
 
 #cleaning
-&& apt-get --purge -y --force-yes remove wget git vim \
+&& apt-get --purge -y --force-yes remove \
+        vim \
+        wget \
+        git \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng12-dev \
+        libxml2-dev \
+        libpq-dev \
+        libgearman-dev \
+        libphp-predis \
     && apt-get clean \
     && apt-get autoclean \
     && apt-get autoremove -y --force-yes \
@@ -83,5 +120,7 @@ ADD php-fpm/php-fpm.conf /usr/local/etc/php-fpm.conf
 ADD php-fpm/php.ini /usr/local/etc/php/conf.d/php.ini
 VOLUME /var/www/
 WORKDIR /var/www/
+
+EXPOSE 9000
 
 CMD ["php-fpm"]
