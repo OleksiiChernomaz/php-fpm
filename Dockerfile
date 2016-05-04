@@ -6,24 +6,29 @@ FROM php:7.0-fpm
 MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
 
 # Install modules
-RUN apt-get update && apt-get install -y --force-yes \
-    vim wget git npm\
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libmcrypt-dev \
-    libpng12-dev \
-    libxml2-dev \
-    libpq-dev \
-    libphp-predis \
+RUN export APCU_VERSION=5.1.3 \
+    && export APCU_BC_VERSION=1.0.3 \
+&& apt-get update && apt-get install -y --force-yes \
+        vim wget git npm\
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng12-dev \
+        libxml2-dev \
+        libpq-dev \
+        libgearman-dev \
+        libphp-predis \
 # Install additional core extensions
 && docker-php-ext-install \
-    mbstring \
-    pdo_pgsql \
-    zip \
-    opcache \
-    mcrypt \
+        mbstring \
+        pdo_mysql \
+        pdo_pgsql \
+        soap \
+        zip \
+        opcache \
+        mcrypt \
 # Install GD
-#&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install gd \
+&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install gd \
 
 # install redis
 && cd /usr/src/php/ext \
@@ -35,16 +40,33 @@ RUN apt-get update && apt-get install -y --force-yes \
     && cd .. \
     && docker-php-ext-install redis \
 
-#install phpunit
-&& curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer \
-    && wget https://phar.phpunit.de/phpunit.phar \
-    && chmod +x phpunit.phar \
-    && mv phpunit.phar /usr/local/bin/phpunit \
-
 #install minifier
 && npm install -g uglify-js \
     && npm install -g uglifycss \
+
+#install apcu
+&& cd /usr/src/php/ext \
+    && wget https://pecl.php.net/get/apcu-$APCU_VERSION.tgz \
+    && tar -xzf apcu-$APCU_VERSION.tgz  \
+    && cd apcu-$APCU_VERSION \
+    && phpize \
+    && ./configure --enable-apcu-bc\
+    && make && make install \
+    && cd .. \
+    && docker-php-ext-install apcu-$APCU_VERSION \
+    && rm -rf apcu-$APCU_VERSION.tgz \
+
+#install apcu-bc (apc support)
+&& cd /usr/src/php/ext \
+    && wget https://pecl.php.net/get/apcu_bc-$APCU_BC_VERSION.tgz \
+    && tar -xzf apcu_bc-$APCU_BC_VERSION.tgz  \
+    && cd apcu_bc-$APCU_BC_VERSION \
+    && phpize \
+    && ./configure --enable-apcu-bc\
+    && make && make install \
+    && cd .. \
+    && docker-php-ext-install apcu_bc-$APCU_BC_VERSION \
+    && rm -rf apcu_bc-$APCU_BC_VERSION.tgz \
 
 && rm -rf /var/www/* \
     && chown -R www-data:www-data /var/www/ \
