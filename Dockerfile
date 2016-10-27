@@ -2,14 +2,14 @@
 #sudo docker push oleksiichernomaz/php-fpm:7.0
 #docker run -it oleksiichernomaz/php-fpm:7.0 bash
 
+#MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
 FROM php:7.0-fpm
-MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
 
 # Install modules
-RUN export APCU_VERSION=5.1.3 \
+RUN export APCU_VERSION=5.1.7 \
     && export APCU_BC_VERSION=1.0.3 \
 && apt-get update && apt-get install -y --force-yes \
-        vim wget git npm\
+        vim wget git\
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
@@ -40,17 +40,13 @@ RUN export APCU_VERSION=5.1.3 \
     && cd .. \
     && docker-php-ext-install redis \
 
-#install minifier
-&& npm install -g uglify-js \
-    && npm install -g uglifycss \
-
 #install apcu
 && cd /usr/src/php/ext \
     && wget https://pecl.php.net/get/apcu-$APCU_VERSION.tgz \
     && tar -xzf apcu-$APCU_VERSION.tgz  \
     && cd apcu-$APCU_VERSION \
     && phpize \
-    && ./configure --enable-apcu-bc\
+    && ./configure --enable-apcu\
     && make && make install \
     && cd .. \
     && docker-php-ext-install apcu-$APCU_VERSION \

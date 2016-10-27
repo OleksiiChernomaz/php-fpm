@@ -5,11 +5,11 @@
 * mysql support
 * pgsql support
 * redis
-* APCu (5.1.3), compatible with APC (bc version 1.0.3)
+* APCu (5.1.7), compatible with APC (bc version 1.0.3)
 * gd
-* npm
 * composer
-* uglify-js\css
+
+size: 182 MB
 
 Web dir:
 ```/var/www/```
