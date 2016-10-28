@@ -1,10 +1,12 @@
 #sudo docker build -t oleksiichernomaz/php-fpm:5.6 .
+#sudo docker run -it oleksiichernomaz/php-fpm:5.6 bash
+#sudo docker push oleksiichernomaz/php-fpm:5.6
 #MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
 FROM php:5.6-fpm
-ENV XCACHE_VERSION 3.2.0
 
 # Install modules
-RUN apt-get update && apt-get install -y --force-yes \
+RUN export XCACHE_VERSION=3.2.0 \
+&& apt-get update && apt-get install -y --force-yes \
         vim wget git npm\
         libfreetype6-dev \
         libjpeg62-turbo-dev \
@@ -16,8 +18,7 @@ RUN apt-get update && apt-get install -y --force-yes \
 # Install additional core extensions
 && docker-php-ext-install \
         mbstring \
-        pdo \
-        pdo_mysql \
+        mysql mysqli pdo pdo_mysql \
         pdo_pgsql \
         soap \
         zip \
