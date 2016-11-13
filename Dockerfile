@@ -1,6 +1,6 @@
-#docker build -t oleksiichernomaz/php-fpm:7.0 .
+#sudo docker build -t oleksiichernomaz/php-fpm:7.0 .
+#sudo docker run -it oleksiichernomaz/php-fpm:7.0 bash
 #sudo docker push oleksiichernomaz/php-fpm:7.0
-#docker run -it oleksiichernomaz/php-fpm:7.0 bash
 
 #MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
 FROM php:7.0-fpm
@@ -30,39 +30,21 @@ RUN export APCU_VERSION=5.1.7 \
 # Install GD
 && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install gd \
 
+#install apcu
+&& pecl channel-update pecl.php.net \
+    && pecl install apcu-$APCU_VERSION \
+    && pecl install --onlyreqdeps apcu_bc-$APCU_BC_VERSION \
+    && echo 'extension = apcu.so' > /usr/local/etc/php/conf.d/apcu.ini \
+
 # install redis
-&& cd /usr/src/php/ext \
+&& mkdir -p /usr/src/php/ext && cd /usr/src/php/ext \
     && git clone https://github.com/phpredis/phpredis.git redis \
     && cd redis \
     && git checkout php7 \
-    && phpize \
-    && ./configure --enable-redis \
+    && phpize && ./configure --enable-redis \
     && cd .. \
     && docker-php-ext-install redis \
-
-#install apcu
-&& cd /usr/src/php/ext \
-    && wget https://pecl.php.net/get/apcu-$APCU_VERSION.tgz \
-    && tar -xzf apcu-$APCU_VERSION.tgz  \
-    && cd apcu-$APCU_VERSION \
-    && phpize \
-    && ./configure --enable-apcu\
-    && make && make install \
-    && cd .. \
-    && docker-php-ext-install apcu-$APCU_VERSION \
-    && rm -rf apcu-$APCU_VERSION.tgz \
-
-#install apcu-bc (apc support)
-&& cd /usr/src/php/ext \
-    && wget https://pecl.php.net/get/apcu_bc-$APCU_BC_VERSION.tgz \
-    && tar -xzf apcu_bc-$APCU_BC_VERSION.tgz  \
-    && cd apcu_bc-$APCU_BC_VERSION \
-    && phpize \
-    && ./configure --enable-apcu-bc\
-    && make && make install \
-    && cd .. \
-    && docker-php-ext-install apcu_bc-$APCU_BC_VERSION \
-    && rm -rf apcu_bc-$APCU_BC_VERSION.tgz \
+    && rm -rf redis \
 
 && rm -rf /var/www/* \
     && chown -R www-data:www-data /var/www/ \
@@ -87,5 +69,7 @@ ADD php-fpm/php.ini /usr/local/etc/php/conf.d/php.ini
 
 VOLUME /var/www/
 WORKDIR /var/www/
+
+EXPOSE 9000
 
 CMD ["php-fpm"]
