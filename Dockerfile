@@ -1,19 +1,22 @@
-#sudo docker build -t oleksiichernomaz/php-fpm:5.6 .
-#sudo docker run -it oleksiichernomaz/php-fpm:5.6 bash
-#sudo docker push oleksiichernomaz/php-fpm:5.6
+#sudo docker build -t oleksiichernomaz/php-fpm:7.0 .
+#sudo docker run -it oleksiichernomaz/php-fpm:7.0 bash
+#sudo docker push oleksiichernomaz/php-fpm:7.0
+
 #MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
-FROM php:5.6-fpm
+FROM php:7.0-fpm
 
 # Install modules
-RUN export XCACHE_VERSION=3.2.0 \
+RUN export APCU_VERSION=5.1.7 \
+    && export APCU_BC_VERSION=1.0.3 \
 && apt-get update && apt-get install -y --force-yes \
-        vim wget git npm\
+        vim wget git\
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
         libpng12-dev \
         libxml2-dev \
         libpq-dev \
+        libgearman-dev \
         libphp-predis \
 # Install additional core extensions
 && docker-php-ext-install \
@@ -26,26 +29,22 @@ RUN export XCACHE_VERSION=3.2.0 \
         mcrypt \
 # Install GD
 && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install gd \
-# install x-cache
-&& cd /usr/src/php/ext \
-    && wget http://xcache.lighttpd.net/pub/Releases/$XCACHE_VERSION/xcache-$XCACHE_VERSION.tar.gz \
-    && tar -xzf xcache-$XCACHE_VERSION.tar.gz \
-    && cd xcache-$XCACHE_VERSION \
-    && phpize \
-    && ./configure --enable-xcache --enable-xcache-coverager\
-    && make && make install \
-    && cd .. \
-    && docker-php-ext-install xcache-$XCACHE_VERSION \
-    && rm -rf xcache-$XCACHE_VERSION.tar.gz \
-    && sed -i 's/zend_extension/extension/g' /usr/local/etc/php/conf.d/docker-php-ext-xcache.ini \
+
+#install apcu
+&& pecl channel-update pecl.php.net \
+    && pecl install apcu-$APCU_VERSION \
+    && pecl install --onlyreqdeps apcu_bc-$APCU_BC_VERSION \
+    && echo 'extension = apcu.so' > /usr/local/etc/php/conf.d/apcu.ini \
+
 # install redis
-&& cd /usr/src/php/ext \
+&& mkdir -p /usr/src/php/ext && cd /usr/src/php/ext \
     && git clone https://github.com/phpredis/phpredis.git redis \
     && cd redis \
-    && phpize \
-    && ./configure --enable-redis \
+    && git checkout php7 \
+    && phpize && ./configure --enable-redis \
     && cd .. \
     && docker-php-ext-install redis \
+    && rm -rf redis \
 
 && rm -rf /var/www/* \
     && chown -R www-data:www-data /var/www/ \
@@ -70,5 +69,7 @@ ADD php-fpm/php.ini /usr/local/etc/php/conf.d/php.ini
 
 VOLUME /var/www/
 WORKDIR /var/www/
+
+EXPOSE 9000
 
 CMD ["php-fpm"]
