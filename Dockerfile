@@ -1,56 +1,42 @@
 #MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
-FROM php:7.1-fpm
+FROM oleksiichernomaz/php-fpm:7.1
 
 # Install modules
-RUN export REDIS_VERSION=3.1.2 \
-    && export MEMCACHED_VERSION=3.0.3 \
-    && export APCu_VERSION=5.1.8 \
-    && export APCU_BC_VERSION=1.0.3 \
-&& apt-get update && apt-get install -y --no-install-recommends \
-        libxml2-dev \
-        libssl-dev \
-        libmemcached-dev \
+RUN export PHPUNIT_VERSION=6.1 \
+    && export XDEBUG_VERSION=2.5.3 \
+
 && pecl channel-update pecl.php.net \
+&& apt-get update && apt-get install -y --force-yes --no-install-recommends \
+        vim wget git \
 
-# Install additional core extensions
-&& docker-php-ext-install \
-        bcmath \
-        mbstring \
-        pdo mysqli pdo_mysql \
-        soap \
-        ftp \
-        opcache \
+#install xdebug
+&& pecl channel-update pecl.php.net \
+    && pecl install --onlyreqdeps xdebug-$XDEBUG_VERSION \
+    && docker-php-ext-enable xdebug \
 
-#install redis
-&& pecl install redis-$REDIS_VERSION \
+#install composer
+&& su && curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer \
+    && exit \
 
-#install apc+apcu
-&& pecl install apcu-$APCu_VERSION \
-    && pecl install --onlyreqdeps apcu_bc-$APCU_BC_VERSION \
-    && echo 'extension = apcu.so' > /usr/local/etc/php/conf.d/apcu.ini \
-
-# install memcached
-&& pecl install memcached-$MEMCACHED_VERSION \
-
-&& rm -rf /var/www/* \
-    && chown -R www-data:www-data /var/www/ \
+# install phpunit
+&& wget https://phar.phpunit.de/phpunit-$PHPUNIT_VERSION.phar \
+    && chmod +x phpunit-$PHPUNIT_VERSION.phar \
+    && mv phpunit-$PHPUNIT_VERSION.phar /usr/local/bin/phpunit \
+    && phpunit --version \
 
 #cleaning
-&& apt-get --purge -y --force-yes remove libxml2-dev libssl-dev libmemcached-dev \
-    && apt-get clean \
+&& apt-get clean \
     && apt-get autoclean \
     && apt-get autoremove -y --force-yes \
+    && apt-get --purge remove tex.\*-doc$ \
+    && apt-get remove --purge texlive-fonts-recommended-doc texlive-latex-base-doc texlive-latex-extra-doc \
+      texlive-latex-recommended-doc texlive-pictures-doc texlive-pstricks-doc \
 && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/* \
     && rm -rf /usr/src/* \
-    && rm -rf /usr/share/doc \
 && rm -rf /usr/share/man/* /usr/share/groff/* /usr/share/info/* \
-    && rm -rf /usr/share/lintian/* /usr/share/linda/* /var/cache/man/*
-
-# Write configs #and override it via: /usr/local/configs/php/
-ADD php-fpm/php-fpm.conf /usr/local/etc/php-fpm.conf
-ADD configs/php.ini /usr/local/etc/php/conf.d/php.ini
-ADD configs/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+    && rm -rf /usr/share/lintian/* /usr/share/linda/*
 
 VOLUME /var/www/
 WORKDIR /var/www/
