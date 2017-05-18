@@ -1,6 +1,3 @@
-#docker build --compress --pull --force-rm --squash --tag oleksiichernomaz/php-fpm:7.1 .
-#docker push oleksiichernomaz/php-fpm:7.1
-
 #MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
 FROM php:7.1-fpm
 
