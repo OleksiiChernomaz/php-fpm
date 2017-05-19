@@ -4,10 +4,18 @@ FROM oleksiichernomaz/php-fpm:7.1
 # Install modules
 RUN export PHPUNIT_VERSION=6.1 \
     && export XDEBUG_VERSION=2.5.3 \
-
+&& apk add --update-cache --upgrade \
+    autoconf \
+    build-base \
+    openssl-dev \
+    postgresql-dev \
+    libxml2-dev \
+    pcre-dev \
+    postgresql-dev \
+    htop vim git \
+    ca-certificates \
+    openssl \
 && pecl channel-update pecl.php.net \
-&& apt-get update && apt-get install -y --force-yes --no-install-recommends \
-        vim wget git \
 
 #install xdebug
 && pecl channel-update pecl.php.net \
@@ -15,32 +23,18 @@ RUN export PHPUNIT_VERSION=6.1 \
     && docker-php-ext-enable xdebug \
 
 #install composer
-&& su && curl -sS https://getcomposer.org/installer | php \
+&& curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer \
-    && exit \
 
-# install phpunit
+#install phpunit
 && wget https://phar.phpunit.de/phpunit-$PHPUNIT_VERSION.phar \
     && chmod +x phpunit-$PHPUNIT_VERSION.phar \
     && mv phpunit-$PHPUNIT_VERSION.phar /usr/local/bin/phpunit \
-    && phpunit --version \
 
-#cleaning
-&& apt-get clean \
-    && apt-get autoclean \
-    && apt-get autoremove -y --force-yes \
-    && apt-get --purge remove tex.\*-doc$ \
-    && apt-get remove --purge texlive-fonts-recommended-doc texlive-latex-base-doc texlive-latex-extra-doc \
-      texlive-latex-recommended-doc texlive-pictures-doc texlive-pstricks-doc \
-&& rm -rf /var/lib/apt/lists/* \
-    && rm -rf /var/cache/* \
-    && rm -rf /usr/src/* \
-&& rm -rf /usr/share/man/* /usr/share/groff/* /usr/share/info/* \
-    && rm -rf /usr/share/lintian/* /usr/share/linda/*
-
-VOLUME /var/www/
-WORKDIR /var/www/
+# cleanup
+&& apk del \
+    autoconf \
+    build-base
 
 EXPOSE 9000
-
 CMD ["php-fpm"]

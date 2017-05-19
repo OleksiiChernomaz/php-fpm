@@ -2,8 +2,7 @@
 
 ### version
 ```
-root@43d9830b683a:/var/www# php -v
-PHP 7.1.5 (cli) (built: May 13 2017 00:18:23) ( NTS )
+PHP 7.1.5 (cli) (built: May 13 2017 00:27:38) ( NTS )
 Copyright (c) 1997-2017 The PHP Group
 Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
     with Zend OPcache v7.1.5, Copyright (c) 1999-2017, by Zend Technologies
@@ -13,7 +12,6 @@ Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
 ### modules
 
 ```
-root@43d9830b683a:/var/www# php -m
 [PHP Modules]
 apcu
 bcmath
@@ -36,10 +34,12 @@ openssl
 pcre
 PDO
 pdo_mysql
+pdo_pgsql
 pdo_sqlite
 Phar
 posix
 readline
+redis
 Reflection
 session
 SimpleXML
@@ -62,6 +62,11 @@ Zend OPcache
 
 ### Web dir:
 ```/var/www/```
+
+### Configs directory
+```
+.:/usr/local/etc/php/conf.d/:/usr/local/etc/php/*.ini
+```
 
 # How to contribute
 
