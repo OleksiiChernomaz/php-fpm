@@ -37,11 +37,7 @@ RUN export REDIS_VERSION=3.1.2 \
 # cleanup
 && apk del \
     autoconf \
-    build-base \
-    openssl-dev \
-    postgresql-dev \
-    libxml2-dev \
-    pcre-dev
+    build-base
 
 # Write configs #and override it via: /usr/local/configs/php/
 ADD php-fpm/php-fpm.conf /usr/local/etc/php-fpm.conf

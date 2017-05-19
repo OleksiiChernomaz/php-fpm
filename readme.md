@@ -11,7 +11,6 @@ Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
 ### modules
 
 ```
-root@7545d742852a:/var/www# php -m
 [PHP Modules]
 apcu
 bcmath
@@ -34,10 +33,12 @@ openssl
 pcre
 PDO
 pdo_mysql
+pdo_pgsql
 pdo_sqlite
 Phar
 posix
 readline
+redis
 Reflection
 session
 SimpleXML
@@ -58,6 +59,11 @@ Zend OPcache
 
 ### Web dir:
 ```/var/www/```
+
+### Configs directory
+```
+.:/usr/local/etc/php/conf.d/:/usr/local/etc/php/*.ini
+```
 
 # How to contribute
 
