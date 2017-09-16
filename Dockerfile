@@ -2,8 +2,8 @@
 FROM oleksiichernomaz/php-fpm:7.1
 
 # Install modules
-RUN export PHPUNIT_VERSION=6.1 \
-    && export XDEBUG_VERSION=2.5.3 \
+RUN export PHPUNIT_VERSION=6.3 \
+    && export XDEBUG_VERSION=2.5.5 \
 && apk add --update-cache --upgrade \
     autoconf \
     build-base \
