@@ -2,15 +2,18 @@
 FROM php:7.1-fpm-alpine
 
 # Install modules
-RUN export REDIS_VERSION=3.1.2 \
+RUN export REDIS_VERSION=3.1.3 \
     && export APCu_VERSION=5.1.8 \
     && export APCU_BC_VERSION=1.0.3 \
+    && export GEOIP_VERSION=1.1.1 \
 && apk add --update-cache --upgrade \
     autoconf \
     build-base \
     openssl-dev \
     postgresql-dev \
     libxml2-dev \
+    geoip \
+    geoip-dev \
     pcre-dev \
 && pecl channel-update pecl.php.net \
 
@@ -28,6 +31,10 @@ RUN export REDIS_VERSION=3.1.2 \
 #install redis
 && pecl install redis-$REDIS_VERSION \
     && docker-php-ext-enable redis \
+
+#install geoip
+&& pecl install geoip-$GEOIP_VERSION \
+    && docker-php-ext-enable geoip \
 
 #install apc+apcu
 && pecl install apcu-$APCu_VERSION \
