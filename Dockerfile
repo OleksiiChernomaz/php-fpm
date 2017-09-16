@@ -35,6 +35,15 @@ RUN export REDIS_VERSION=3.1.3 \
 #install geoip
 && pecl install geoip-$GEOIP_VERSION \
     && docker-php-ext-enable geoip \
+    && wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
+    && gunzip GeoLiteCity.dat.gz \
+    && mkdir -p /usr/share/GeoIP \
+    && mv GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat \
+    && chmod +rx /usr/share/GeoIP/GeoIPCity.dat \
+    && wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz \
+    && gunzip GeoIP.dat.gz \
+    && mv GeoIP.dat /usr/share/GeoIP/GeoIP.dat \
+    && chmod +rx /usr/share/GeoIP/GeoIP.dat \
 
 #install apc+apcu
 && pecl install apcu-$APCu_VERSION \
