@@ -1,11 +1,12 @@
-# php-fpm 7.2.x
+# php-fpm 7.2.x for dev env
 
 ### version 
 ```
-PHP 7.2.1 (cli) (built: Jan 10 2018 02:33:50) ( NTS )
+PHP 7.2.x (cli) (built: Jan 10 2018 02:33:50) ( NTS )
 Copyright (c) 1997-2017 The PHP Group
 Zend Engine v3.2.0, Copyright (c) 1998-2017 Zend Technologies
     with Zend OPcache v7.2.1, Copyright (c) 1999-2017, by Zend Technologies
+    with Xdebug v2.6.0beta1, Copyright (c) 2002-2017, by Derick Rethans
 ```
 
 ### modules
@@ -57,6 +58,7 @@ Zend OPcache
 zlib
 
 [Zend Modules]
+Xdebug
 Zend OPcache
 
 ```
@@ -79,6 +81,6 @@ Zend OPcache
 # To make a test build on your local machine:
 
 ```
-docker build --compress --pull --force-rm --squash --tag oleksiichernomaz/php-fpm:7.2 .
-docker run -it oleksiichernomaz/php-fpm:7.2
+docker build --compress --pull --force-rm --squash --tag oleksiichernomaz/php-fpm:7.2-dev .
+docker run -it oleksiichernomaz/php-fpm:7.2-dev
 ```
