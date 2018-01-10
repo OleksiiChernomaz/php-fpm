@@ -1,18 +1,18 @@
-# php-fpm
+# php-fpm 7.2.x
 
-### version
+### version 
 ```
-PHP 7.1.9 (cli) (built: Sep 15 2017 00:19:59) ( NTS )
+PHP 7.2.1 (cli) (built: Jan 10 2018 02:33:50) ( NTS )
 Copyright (c) 1997-2017 The PHP Group
-Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
-    with Zend OPcache v7.1.9, Copyright (c) 1999-2017, by Zend Technologies
+Zend Engine v3.2.0, Copyright (c) 1998-2017 Zend Technologies
+    with Zend OPcache v7.2.1, Copyright (c) 1999-2017, by Zend Technologies
 ```
 
 ### modules
 
 ```
+/var/www # php -m
 [PHP Modules]
-apcu
 bcmath
 Core
 ctype
@@ -22,12 +22,14 @@ dom
 fileinfo
 filter
 ftp
+gd
 geoip
 hash
 iconv
 json
 libxml
 mbstring
+memcached
 mysqli
 mysqlnd
 openssl
@@ -56,6 +58,7 @@ zlib
 
 [Zend Modules]
 Zend OPcache
+
 ```
 
 ### Web dir:
@@ -72,7 +75,10 @@ Zend OPcache
 - make sure that you have the latest changes from the branch
 - make all the changes, create pull request
 
+
+# To make a test build on your local machine:
+
 ```
-docker build --compress --pull --force-rm --squash --tag oleksiichernomaz/php-fpm:7.1 .
-docker push oleksiichernomaz/php-fpm:7.1
+docker build --compress --pull --force-rm --squash --tag oleksiichernomaz/php-fpm:7.2 .
+docker run -it oleksiichernomaz/php-fpm:7.2
 ```
