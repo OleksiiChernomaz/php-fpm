@@ -1,4 +1,3 @@
-#MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
 FROM php:7.2-fpm-alpine
 # Install modules
 RUN export REDIS_VERSION=3.1.6 \
@@ -60,8 +59,7 @@ RUN export REDIS_VERSION=3.1.6 \
     wget
 # Write configs #and override it via: /usr/local/configs/php/
 ADD php-fpm/php-fpm.conf /usr/local/etc/php-fpm.conf
-ADD configs/php.ini /usr/local/etc/php/conf.d/php.ini
-ADD configs/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+ADD php-fpm/php.ini /usr/local/etc/php/conf.d/php.ini
 # define a volume + working dir
 VOLUME /var/www/
 WORKDIR /var/www/
