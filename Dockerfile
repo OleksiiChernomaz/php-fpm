@@ -1,4 +1,3 @@
-#MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
 FROM oleksiichernomaz/php-fpm:7.2
 # Install modules
 RUN export PHPUNIT_VERSION=6.4 \
@@ -10,7 +9,6 @@ RUN export PHPUNIT_VERSION=6.4 \
     ca-certificates \
     wget \
     openssl \
-&& pecl channel-update pecl.php.net \
 #install xdebug
 && pecl channel-update pecl.php.net \
     && pecl install --onlyreqdeps xdebug-$XDEBUG_VERSION \
@@ -26,5 +24,10 @@ RUN export PHPUNIT_VERSION=6.4 \
 && apk del \
     autoconf \
     build-base
+
+# Write configs #and override it via: /usr/local/configs/php/
+ADD php-fpm/php-fpm.conf /usr/local/etc/php-fpm.conf
+ADD php-fpm/php.ini /usr/local/etc/php/conf.d/php.ini
+
 EXPOSE 9000
 CMD ["php-fpm"]
