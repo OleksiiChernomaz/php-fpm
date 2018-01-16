@@ -1,4 +1,3 @@
-#MAINTAINER Oleksii Chernomaz <alex.chmz@gmail.com>
 FROM oleksiichernomaz/php-fpm:7.1
 # Install modules
 RUN export PHPUNIT_VERSION=6.4 \
@@ -6,15 +5,9 @@ RUN export PHPUNIT_VERSION=6.4 \
 && apk add --update-cache --upgrade \
     autoconf \
     build-base \
-    openssl-dev \
-    postgresql-dev \
-    libxml2-dev \
-    pcre-dev \
-    postgresql-dev \
     htop vim git \
     ca-certificates \
     openssl \
-&& pecl channel-update pecl.php.net \
 #install xdebug
 && pecl channel-update pecl.php.net \
     && pecl install --onlyreqdeps xdebug-$XDEBUG_VERSION \
@@ -30,5 +23,7 @@ RUN export PHPUNIT_VERSION=6.4 \
 && apk del \
     autoconf \
     build-base
+# inject default config
+ADD php-fpm/php.ini /usr/local/etc/php/conf.d/php.ini
 EXPOSE 9000
 CMD ["php-fpm"]
