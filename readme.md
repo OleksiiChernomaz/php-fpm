@@ -13,21 +13,21 @@
 # version 7.2.X
 
 ```
-PHP 7.2.1 (cli) (built: Jan 10 2018 02:33:50) ( NTS )
-Copyright (c) 1997-2017 The PHP Group
-Zend Engine v3.2.0, Copyright (c) 1998-2017 Zend Technologies
-    with Zend OPcache v7.2.1, Copyright (c) 1999-2017, by Zend Technologies
+PHP 7.2.8 (cli) (built: Jul 21 2018 08:09:37) ( NTS )
+Copyright (c) 1997-2018 The PHP Group
+Zend Engine v3.2.0, Copyright (c) 1998-2018 Zend Technologies
+    with Zend OPcache v7.2.8, Copyright (c) 1999-2018, by Zend Technologies
 ```
 
 #### modules
 
 ```
 [PHP Modules]
-bcmath, Core, ctype, curl, date, dom, fileinfo, filter, ftp, 
-gd, geoip, hash, iconv, json, libxml, mbstring, memcached, mysqli, 
-mysqlnd, openssl, pcre, PDO, pdo_mysql, pdo_pgsql, pdo_sqlite, Phar, 
-posix, readline, redis, Reflection, session, SimpleXML, soap, SPL, sqlite3, 
-standard, tokenizer, xml, xmlreader, xmlwriter, Zend OPcache, zlib, 
+apcu bcmath Core ctype curl date dom fileinfo filter ftp
+gd geoip hash iconv json libxml mbstring memcached mysqli
+mysqlnd openssl pcre PDO pdo_mysql pdo_pgsql pdo_sqlite Phar
+posix readline redis Reflection session SimpleXML soap sodium
+SPL sqlite3 standard tokenizer xml xmlreader xmlwriter Zend OPcache zlib
 
 [Zend Modules]
 Zend OPcache
