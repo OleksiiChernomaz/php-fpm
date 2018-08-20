@@ -1,8 +1,9 @@
 FROM php:7.2-fpm-alpine
 # Install modules
-RUN export REDIS_VERSION=3.1.6 \
+RUN export REDIS_VERSION=4.1.1 \
     && export GEOIP_VERSION=1.1.1 \
     && export MEMCACHED_VERSION=3.0.4 \
+    && export APU_VERSION=5.1.8 \
 && apk add --no-cache --upgrade \
     autoconf \
     build-base \
@@ -11,7 +12,7 @@ RUN export REDIS_VERSION=3.1.6 \
     pcre-dev \
 && pecl channel-update pecl.php.net \
 ## Install additional core extensions
-&& docker-php-ext-install \
+&& docker-php-ext-install -j$(nproc) \
         pdo \
         bcmath \
         mbstring \
@@ -48,6 +49,9 @@ RUN export REDIS_VERSION=3.1.6 \
         cyrus-sasl-dev \
     && pecl install memcached-$MEMCACHED_VERSION \
     && docker-php-ext-enable memcached \
+#install apcu
+&& pecl install apcu-$APU_VERSION \
+    && docker-php-ext-enable apcu \
 #install gd
 && apk add --no-cache \
     libpng libpng-dev libjpeg-turbo-dev libwebp-dev zlib-dev libxpm-dev \
