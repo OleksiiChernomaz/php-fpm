@@ -10,37 +10,14 @@
 >Web directory as in the `/var/www/`
 >Config directories are: `.:/usr/local/etc/php/conf.d/:/usr/local/etc/php/*.ini`
 
-# version 7.2.X
-
-```
-PHP 7.2.1 (cli) (built: Jan 10 2018 02:33:50) ( NTS )
-Copyright (c) 1997-2017 The PHP Group
-Zend Engine v3.2.0, Copyright (c) 1998-2017 Zend Technologies
-    with Zend OPcache v7.2.1, Copyright (c) 1999-2017, by Zend Technologies
-```
-
-#### modules
-
-```
-[PHP Modules]
-bcmath, Core, ctype, curl, date, dom, fileinfo, filter, ftp, 
-gd, geoip, hash, iconv, json, libxml, mbstring, memcached, mysqli, 
-mysqlnd, openssl, pcre, PDO, pdo_mysql, pdo_pgsql, pdo_sqlite, Phar, 
-posix, readline, redis, Reflection, session, SimpleXML, soap, SPL, sqlite3, 
-standard, tokenizer, xml, xmlreader, xmlwriter, Zend OPcache, zlib, 
-
-[Zend Modules]
-Zend OPcache
-```
-----------
 # version 7.2.X-dev
 
 ```
-PHP 7.2.1 (cli) (built: Jan 10 2018 02:33:50) ( NTS )
-Copyright (c) 1997-2017 The PHP Group
-Zend Engine v3.2.0, Copyright (c) 1998-2017 Zend Technologies
-    with Zend OPcache v7.2.1, Copyright (c) 1999-2017, by Zend Technologies
-    with Xdebug v2.6.0beta1, Copyright (c) 2002-2017, by Derick Rethans
+PHP 7.2.9 (cli) (built: Sep  7 2018 20:56:13) ( NTS )
+Copyright (c) 1997-2018 The PHP Group
+Zend Engine v3.2.0, Copyright (c) 1998-2018 Zend Technologies
+    with Zend OPcache v7.2.9, Copyright (c) 1999-2018, by Zend Technologies
+    with Xdebug v2.6.1, Copyright (c) 2002-2018, by Derick Rethans
 ```
 
 #### modules
@@ -56,55 +33,15 @@ standard, tokenizer, xdebug, xml, xmlreader, xmlwriter, Zend OPcache, zlib,
 [Zend Modules]
 Xdebug, Zend OPcache
 ```
-----------
-# version 7.1.X
 
+# PHPUnit
 ```
-PHP 7.1.13 (cli) (built: Jan 10 2018 03:09:34) ( NTS )
-Copyright (c) 1997-2017 The PHP Group
-Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
-    with Zend OPcache v7.1.13, Copyright (c) 1999-2017, by Zend Technologies
+PHPUnit 7.3.5 by Sebastian Bergmann and contributors.
 ```
 
-#### modules
-
+# Composer
 ```
-[PHP Modules]
-bcmath, Core, ctype, curl, date, dom, fileinfo, 
-filter, ftp, geoip, hash, iconv, json, libxml, 
-mbstring, mysqli, mysqlnd, openssl, pcre, PDO, 
-pdo_mysql, pdo_pgsql, pdo_sqlite, Phar, posix, 
-readline, redis, Reflection, session, SimpleXML, 
-soap, SPL, sqlite3, standard, tokenizer, xml, 
-xmlreader, xmlwriter, Zend OPcache, zlib, 
-
-[Zend Modules]
-Zend OPcache
-```
-
-----------
-# version 7.1.X-dev
-
-```
-PHP 7.1.13 (cli) (built: Jan 10 2018 03:09:34) ( NTS )
-Copyright (c) 1997-2017 The PHP Group
-Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies
-    with Zend OPcache v7.1.13, Copyright (c) 1999-2017, by Zend Technologies
-    with Xdebug v2.5.5, Copyright (c) 2002-2017, by Derick Rethans
-```
-
-#### modules
-
-```
-[PHP Modules]
-bcmath, Core, ctype, curl, date, dom, fileinfo, filter, ftp, 
-geoip, hash, iconv, json, libxml, mbstring, mysqli, mysqlnd, openssl, pcre, 
-PDO, pdo_mysql, pdo_pgsql, pdo_sqlite, Phar, posix, readline, redis, 
-Reflection, session, SimpleXML, soap, SPL, sqlite3, standard, tokenizer, 
-xdebug, xml, xmlreader, xmlwriter, Zend OPcache, zlib, 
-
-[Zend Modules]
-Xdebug, Zend OPcache
+Composer version 1.7.2 2018-08-16 16:57:12
 ```
 
 ----------
@@ -118,5 +55,5 @@ Xdebug, Zend OPcache
 # To test build on local machine, use:
 
 ```
-docker build --compress --pull --force-rm --tag oleksiichernomaz/php-fpm:7.X .
+docker build --compress --pull --force-rm --tag oleksiichernomaz/php-fpm:7.2-dev .
 ```
